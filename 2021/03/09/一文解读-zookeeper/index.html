@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>一文解读 zookeeper - 疯狂小周</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="疯狂小周"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="疯狂小周"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="zookeeper 是什么？官方文档是这样解读zookeeper的：它是一个分布式协调框架，是Apache Hadoop 的一个子项目，它主要是用来 解决分布式应用中 经常遇到的一些 数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。 zookeeper的两大基本特性数据结构Zookeeper 维护一个类似Linux文件系统的数据结构。"><meta property="og:type" content="blog"><meta property="og:title" content="一文解读 zookeeper"><meta property="og:url" content="https://zhouxh-z.github.io/"><meta property="og:site_name" content="疯狂小周"><meta property="og:description" content="zookeeper 是什么？官方文档是这样解读zookeeper的：它是一个分布式协调框架，是Apache Hadoop 的一个子项目，它主要是用来 解决分布式应用中 经常遇到的一些 数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。 zookeeper的两大基本特性数据结构Zookeeper 维护一个类似Linux文件系统的数据结构。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5beb4fd3fcba47f4b520c280ade966a4~tplv-k3u1fbpfcp-watermark.image"><meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6682d5e9cc714564b1114318338a9fd2~tplv-k3u1fbpfcp-watermark.image"><meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ea3cc8d44cf84fc491455a0df3500011~tplv-k3u1fbpfcp-watermark.image"><meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/43ab49311c834de2a2e07187b4322702~tplv-k3u1fbpfcp-watermark.image"><meta property="article:published_time" content="2021-03-09T02:00:43.000Z"><meta property="article:modified_time" content="2021-03-10T02:05:58.763Z"><meta property="article:author" content="zhouxh-z"><meta property="article:tag" content="分布式中间件"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5beb4fd3fcba47f4b520c280ade966a4~tplv-k3u1fbpfcp-watermark.image"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouxh-z.github.io/2021/03/09/%E4%B8%80%E6%96%87%E8%A7%A3%E8%AF%BB-zookeeper/"},"headline":"疯狂小周","image":[],"datePublished":"2021-03-09T02:00:43.000Z","dateModified":"2021-03-10T02:05:58.763Z","author":{"@type":"Person","name":"zhouxh-z"},"description":"zookeeper 是什么？官方文档是这样解读zookeeper的：它是一个分布式协调框架，是Apache Hadoop 的一个子项目，它主要是用来 解决分布式应用中 经常遇到的一些 数据管理问题，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。 zookeeper的两大基本特性数据结构Zookeeper 维护一个类似Linux文件系统的数据结构。"}</script><link rel="canonical" href="https://zhouxh-z.github.io/2021/03/09/%E4%B8%80%E6%96%87%E8%A7%A3%E8%AF%BB-zookeeper/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="疯狂小周" type="application/atom+xml">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="疯狂小周" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">首页</a><a class="navbar-item" href="/archives">博文列表</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">关于我</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/zhouxh-z/zhouxh-z.github.io"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-03-09T02:00:43.000Z" title="2021/3/9 上午10:00:43">2021-03-09</time>发表</span><span class="level-item"><time dateTime="2021-03-10T02:05:58.763Z" title="2021/3/10 上午10:05:58">2021-03-10</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">分布式中间件</a></span><span class="level-item">14 分钟读完 (大约2066个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">一文解读 zookeeper</h1><div class="content"><h2 id="zookeeper-是什么？"><a href="#zookeeper-是什么？" class="headerlink" title="zookeeper 是什么？"></a>zookeeper 是什么？</h2><p>官方文档是这样解读zookeeper的：它是一个<strong>分布式协调框架</strong>，是Apache Hadoop 的一个子项目，它主要是用来 <strong>解决分布式应用中</strong> 经常遇到的一些 <strong>数据管理问题</strong>，如：统一命名服务、状态同步服务、集群管理、分布式应用配置项的管理等。</p>
+<h2 id="zookeeper的两大基本特性"><a href="#zookeeper的两大基本特性" class="headerlink" title="zookeeper的两大基本特性"></a>zookeeper的两大基本特性</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>Zookeeper 维护一个类似Linux文件系统的数据结构。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5beb4fd3fcba47f4b520c280ade966a4~tplv-k3u1fbpfcp-watermark.image">  </p>
+<span id="more"></span>
+
+<p>“/”可以理解为根目录，及其子目录项都被称作为 znode(目录节点)，和文件系统类似，我们能够自由的增加、删除znode，在一个znode下增加、删除子znode。</p>
+<p>zookeeper 有6种节点类型：</p>
+<ol>
+<li>PERSISTENT - 持久化目录节点<ul>
+<li>目录节点一经创建，只要不手动删除该节点，他将永远存在。客户端与zookeeper断开连接，节点不会删除。</li>
+</ul>
+</li>
+<li>PERSISTENT_SEQUENTIAL - 持久化顺序编号目录节点<ul>
+<li>顺序节点在持节化节点的基础上，对目录节点进行顺序标号</li>
+</ul>
+</li>
+<li>EPHEMERAL - 临时目录节点<ul>
+<li>一次session中有效，session 过期就会被删除。客户端与zookeeper断开连接后，哪怕短时间内重连，只要不是同一session登录，该节点也会删除。</li>
+</ul>
+</li>
+<li>EPHEMERAL_SEQUENTIAL - 临时顺序编号目录节点<ul>
+<li>临时顺序节点，在临时节点的基础上，对目录节点进行顺序标号</li>
+</ul>
+</li>
+<li>TTL节点<ul>
+<li>可设置超时时间，一旦超过限定时间就会被删除，zk后台维护了一个定时任务，每60秒扫描一次，过期的删除。【默认禁用，只能通过系统配置zookeeper.extendedTypesEnabled=true 开启，不稳定】</li>
+</ul>
+</li>
+<li>Container - 容器节点<ul>
+<li>3.5.3 版本新增，新建的容器节点和普通节点无异，一旦容器节点下新建过子节点，最后清空子节点，那么该容器节点也会在未来被删除。【zk后台维护了一个定时任务，每60秒扫描一次】<h3 id="节点监听机制"><a href="#节点监听机制" class="headerlink" title="节点监听机制"></a>节点监听机制</h3>zookeeper 服务端提供节点监听功能，以便客户端感知到服务端节点发生变化。<br>zookeeper 提供了三种监听方式：</li>
+</ul>
+</li>
+<li>监听某一节点（get -w /path）<ul>
+<li>当该节点的被删除，或者数据发生修改时，服务端会通知客户端节点发生变化【只会告知是节点被删除，还是节点中的数据发生变化，而不会告知数据变化的结果，需要客户端手动获取新数据】</li>
+</ul>
+</li>
+<li>监听某一目录（ls -w /path）<ul>
+<li>当该目录下有子节点新增或者删除，服务端会通知客户端</li>
+</ul>
+</li>
+<li>监听某个目录的递归子节点（ls -R -w /path）<ul>
+<li>当该根目录的被删除、数据被修改时，或者子目录有新增删除时，会通知客户端</li>
+</ul>
+</li>
+</ol>
+<p><strong>注：zookeeper 所有的监听机制都是单次生效，一旦触发，监听事件就会被移除。如果监听的是目录的递归子节点，每个节点都会触发一次。</strong></p>
+<h3 id="zookeeper-的使用场景"><a href="#zookeeper-的使用场景" class="headerlink" title="zookeeper 的使用场景"></a>zookeeper 的使用场景</h3><p>基于zookeeper的两大特性，可以很方便的完成</p>
+<ol>
+<li><p><strong>分布式配置中心</strong>/<code>分布式注册中心</code>：利用zk的持久化节点以及监听机制，可以很方便的将 <strong>配置</strong>/ <code>应用信息</code> 保存在zk的持久化节点上面，最终通过监听机制，在配置发生改变时，通知各应用。【适合体量不大的应用】</p>
+</li>
+<li><p>分布式锁：利用zk节点的名称的唯一性，可以比较简单的实现分布式锁</p>
+<ul>
+<li><p>公平锁：通过临时持久化顺序节点，让想要获取锁的对象在某一父节点下依次新增顺序节点，然后监听上一个新增的节点。<strong>抢锁条件：序号最小的节点获取锁</strong>。再上一节点释放锁被删除时，下一节点会监听到这一消息，然后进行抢锁工作。  </p>
+<p>  <img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6682d5e9cc714564b1114318338a9fd2~tplv-k3u1fbpfcp-watermark.image"></p>
+</li>
+<li><p>非公平锁：通过监听某一固定名称的临时节点，实现非公平锁。在请求进来时，先去尝试获取锁（get -w /path），如果获取不到，循环等待。然后等上一个占用锁的线程结束时，服务器通知所有等待获取锁的线程，所有等待线程再竞争锁。【在高并发下，这种方式效率比较低。原因：惊群效应，每次只能一个线程获取锁，但是唤醒了所有线程】   </p>
+<pre><code> ![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cfb6ad11f53b46e99739904587b2e3e2~tplv-k3u1fbpfcp-watermark.image)
+</code></pre>
+</li>
+<li><p>读写锁：在应用中同时存在缓存层和数据库层时，在高并发情况下下，可能出现缓存和数据读写不一致的情况。</p>
+<pre><code> ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fcd59e37ff214f76bfc0a3a6cbdec70b~tplv-k3u1fbpfcp-watermark.image)
+</code></pre>
+<p> 这种情况下我们需要添加一把读写锁，来确保写操作发生时，读操作不能再进行读取，需等待写操作完成后，才能进行读取；读操作正在发生时，写操作不能进行写，需等待读操作完成后，才能写入。<br>  <strong>监听规则：连续读的情况，监听上一个写，如果之前没有写，无需加锁；写的情况，监听自己上一个节点；</strong><br> <img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ea3cc8d44cf84fc491455a0df3500011~tplv-k3u1fbpfcp-watermark.image"></p>
+<h2 id="zookeeper-集群"><a href="#zookeeper-集群" class="headerlink" title="zookeeper 集群"></a>zookeeper 集群</h2></li>
+</ul>
+</li>
+<li><p>复制zoo.cfg，并修改如下配置（示范为单机，伪集群配置） </p>
+<ul>
+<li>dataDir=/zookeeper/zk1  </li>
+<li>clientPort=2181  ### 客户端连接端口</li>
+<li>server.1=localhost:2888:3888      ### 2888 集群数据同步通信端口  3888 选举通信端口 </li>
+<li>server.2=localhost:2889:3889  </li>
+<li>server.3=localhost:2890:3890  </li>
+</ul>
+</li>
+<li><p>再对应的dataDir目录下新建myid文件【不带文件格式,server.1服务，myid文件内容就是”1“】 </p>
+</li>
+<li><p>将服务分别启动</p>
+<h3 id="zookeeper-集群选举流程-面试常问"><a href="#zookeeper-集群选举流程-面试常问" class="headerlink" title="zookeeper 集群选举流程* 面试常问 "></a>zookeeper 集群选举流程*<sub> 面试常问 </sub></h3><p>以三个节点的zookeeper节点为例，当两个及以上服务启动后，正式选举开始：</p>
+</li>
+<li><p>第一轮选举：在 ZK 服务启动时，会向配置文件中配置的所有其他节点发送一张选票，选票内容包括 <strong>自身serverId</strong>、<strong>最新数据的ZXID</strong> 等。同时会收到其他应用的选票，将收到的选票和自身选票对比【对比规则：ZXID大的优先，如果ZXID一致，serverId大的优先】</p>
+</li>
+<li><p>第二次选举：各个 ZK 服务，会向其他节点发送，自己所得的所有选票（包括自己）中优先级最高的选票。如果投某一服务的票数超过半数，则选举结束。选举出来的机器，就是leader。</p>
+</li>
+<li><p>之后其他服务连接到集群，就会发现已经存在leader，自动将自身设置为follower。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/43ab49311c834de2a2e07187b4322702~tplv-k3u1fbpfcp-watermark.image"></p>
+<h3 id="zookeeper-集群数据同步"><a href="#zookeeper-集群数据同步" class="headerlink" title="zookeeper 集群数据同步"></a>zookeeper 集群数据同步</h3><p>在选举完成后，客户端连接zookeeper - leader节点写入数据，此时leader节点会打开一个socket等待follower节点来连接，follower节点连接上leader节点后，leader节点会持续发送新的数据到follower节点。如果当时没有新的数据写入，且旧数据已经同步完成，leader节点会周期性的发送一些空白的socket信息，用于保持节点间的连接。</p>
+</li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>一文解读 zookeeper</p><p><a href="https://zhouxh-z.github.io/2021/03/09/一文解读-zookeeper/">https://zhouxh-z.github.io/2021/03/09/一文解读-zookeeper/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>zhouxh-z</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-03-09</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2021-03-10</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a class="icon" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a><a class="icon" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">分布式中间件</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>爱发电</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/" alt="支付宝"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>送我杯咖啡</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/03/10/AOP-%E4%B8%89%E6%AD%A5%E8%B5%B0%EF%BC%9F/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">spring源码研读-AOP-三步走？</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/02/20/Spring%20%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9F/"><span class="level-item">spring怎么解决循环依赖？</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.6.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "145b39ea79a36063169f66a924295f1f",
+            repo: "zhouxh-z-gitalk",
+            owner: "zhouxh-z",
+            clientID: "6abc0688b0359098f85c",
+            clientSecret: "76290a24560cfb174c986cbec75ad1d10aac00d9",
+            admin: ["zhouxh-z"],
+            createIssueManually: true,
+            distractionFreeMode: false,
+            perPage: 10,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="zhouxh-z"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">zhouxh-z</p><p class="is-size-6 is-block">疯狂小周</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>中国.杭州</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">18</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">9</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">7</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/zhouxh-z" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/zhouxh-z"><i class="fab fa-github"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/JAVA/"><span class="level-start"><span class="level-item">JAVA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/JVM/"><span class="level-start"><span class="level-item">JVM</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/Markdown/"><span class="level-start"><span class="level-item">Markdown</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/MySQL/"><span class="level-start"><span class="level-item">MySQL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/redis/"><span class="level-start"><span class="level-item">redis</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/spring/"><span class="level-start"><span class="level-item">spring</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="level-start"><span class="level-item">分布式中间件</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">算法</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BA%BF%E7%A8%8B%E6%B1%A0/"><span class="level-start"><span class="level-item">线程池</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-03-10T02:06:44.000Z">2021-03-10</time></p><p class="title"><a href="/2021/03/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97-1-RabbitMQ/">消息队列[1]--RabbitMQ</a></p><p class="categories"><a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">分布式中间件</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-03-10T02:03:16.000Z">2021-03-10</time></p><p class="title"><a href="/2021/03/10/AOP-%E4%B8%89%E6%AD%A5%E8%B5%B0%EF%BC%9F/">spring源码研读-AOP-三步走？</a></p><p class="categories"><a href="/categories/spring/">spring</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-03-09T02:00:43.000Z">2021-03-09</time></p><p class="title"><a href="/2021/03/09/%E4%B8%80%E6%96%87%E8%A7%A3%E8%AF%BB-zookeeper/">一文解读 zookeeper</a></p><p class="categories"><a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">分布式中间件</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-02-20T02:29:10.000Z">2021-02-20</time></p><p class="title"><a href="/2021/02/20/Spring%20%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9F/">spring怎么解决循环依赖？</a></p><p class="categories"><a href="/categories/spring/">spring</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2020-12-31T10:00:00.000Z">2020-12-31</time></p><p class="title"><a href="/2020/12/31/spring-IOC%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">spring IOC源码解析</a></p><p class="categories"><a href="/categories/spring/">spring</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/12/"><span class="level-start"><span class="level-item">十二月 2020</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/10/"><span class="level-start"><span class="level-item">十月 2020</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LeetCode/"><span class="tag">LeetCode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySQL/"><span class="tag">MySQL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="tag">分布式中间件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8D%9A%E5%AE%A2/"><span class="tag">博客</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"><span class="tag">消息队列</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81/"><span class="tag">源码</span><span class="tag">3</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="疯狂小周" height="28"></a><p class="is-size-7"><span>&copy; 2021 zhouxh-z</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
