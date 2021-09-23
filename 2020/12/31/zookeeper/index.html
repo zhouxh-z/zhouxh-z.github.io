@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="疯狂小周">
+    <meta name="keywords" content="zookeeper 启动过程/leader 选举, 疯狂小周">
     <meta name="description" content="拒绝只做 CRUD ！">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>疯狂小周</title>
+    <title>zookeeper 启动过程/leader 选举 | 疯狂小周</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/6.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">zookeeper 启动过程/leader 选举</h1>
                 </div>
             </div>
         </div>
@@ -429,12 +429,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/zookeeper/">
+                                <span class="chip bg-color">zookeeper</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/zookeeper/" class="post-category">
+                                zookeeper
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -443,7 +456,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-09-23
+                    2020-12-31
                 </div>
                 
 
@@ -666,7 +679,7 @@ Notification n <span class="token operator">=</span> recvqueue<span class="token
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://zhouxh-z.github.io/2021/09/23/zookeeper/">https://zhouxh-z.github.io/2021/09/23/zookeeper/</a>
+                    <a href="https://zhouxh-z.github.io/2020/12/31/zookeeper/">https://zhouxh-z.github.io/2020/12/31/zookeeper/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -703,7 +716,11 @@ Notification n <span class="token operator">=</span> recvqueue<span class="token
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/zookeeper/">
+                                    <span class="chip bg-color">zookeeper</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -745,39 +762,50 @@ Notification n <span class="token operator">=</span> recvqueue<span class="token
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/09/23/zookeeper/">
+                <a href="/2021/02/20/Spring%20%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9F/">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/18.jpg" class="responsive-img" alt="spring怎么解决循环依赖？">
                         
-                        <span class="card-title"></span>
+                        <span class="card-title">spring怎么解决循环依赖？</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            1、什么是循环依赖所谓循环依赖是指，在A注入了B，在B中注入了A。初始化A时需要先初始化B，初始化B又需要初始化A，从而出现的类似死锁的现象。
+
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-23
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-02-20
+                        </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            zhouxh-z
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/spring/" class="post-category">
+                                    spring
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -788,31 +816,31 @@ Notification n <span class="token operator">=</span> recvqueue<span class="token
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/04/28/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97-2-RocketMQ/">
+                <a href="/2020/12/31/spring-IOC%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/1.jpg" class="responsive-img" alt="消息队列[2]--RocketMQ">
+                        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="spring IOC源码解析">
                         
-                        <span class="card-title">消息队列[2]--RocketMQ</span>
+                        <span class="card-title">spring IOC源码解析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            前言spring 是当前最广泛使用的开源框架，而spring framework 则是spring全家桶的基础。spring framework最重要的是 IOC 和 AOP。其中 IOC 又是Spring framework 的基础。今天
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-28
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-31
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="post-category">
-                                    分布式中间件
+                            <a href="/categories/spring/" class="post-category">
+                                    spring
                                 </a>
                             
                             
@@ -822,8 +850,8 @@ Notification n <span class="token operator">=</span> recvqueue<span class="token
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">
-                        <span class="chip bg-color">消息队列</span>
+                    <a href="/tags/%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">源码</span>
                     </a>
                     
                 </div>
@@ -1012,6 +1040,8 @@ Notification n <span class="token operator">=</span> recvqueue<span class="token
     <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
         <i class="fab fa-qq"></i>
     </a>
+
+
 
 
 
