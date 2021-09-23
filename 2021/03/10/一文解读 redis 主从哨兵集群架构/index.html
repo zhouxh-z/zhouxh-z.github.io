@@ -1,0 +1,1150 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="一文解读 redis 主从/哨兵/集群架构, 疯狂小周">
+    <meta name="description" content="拒绝只做 CRUD ！">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>一文解读 redis 主从/哨兵/集群架构 | 疯狂小周</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">疯狂小周</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">疯狂小周</div>
+        <div class="logo-desc">
+            
+            拒绝只做 CRUD ！
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/zhouxh-z/zhouxh-z.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/zhouxh-z/zhouxh-z.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/8.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">一文解读 redis 主从/哨兵/集群架构</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">
+                                <span class="chip bg-color">分布式中间件</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/redis/" class="post-category">
+                                redis
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-03-10
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="主从"><a href="#主从" class="headerlink" title="主从"></a>主从</h2><p>主从结构示意图：<br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6c8fc51278a04589bb4274db36302ecc~tplv-k3u1fbpfcp-watermark.image">  </p>
+<h3 id="主从架构搭建，配置从节点："><a href="#主从架构搭建，配置从节点：" class="headerlink" title="主从架构搭建，配置从节点："></a>主从架构搭建，配置从节点：</h3><ol>
+<li>复制 redis.conf 文件，并修改如下配置<ul>
+<li>port 8001</li>
+<li>pidfile /var/redis_8001.pid</li>
+<li>logfile 8001.log</li>
+<li>dir /usr/local/redis_8001/data</li>
+</ul>
+</li>
+<li>配置主从配置<ul>
+<li>replicaof 172.0.0.1 8002</li>
+<li>replica-read-only yes</li>
+</ul>
+</li>
+<li>根据配置文件启动redis<ul>
+<li>redis-server redis.conf  </li>
+</ul>
+</li>
+</ol>
+<span id="more"></span>
+<h3 id="主从结构工作原理"><a href="#主从结构工作原理" class="headerlink" title="主从结构工作原理"></a>主从结构工作原理</h3><p>master-slave数据同步过程： </p>
+<p><strong>全量同步</strong>：slave会发送一个<strong>PSYNC</strong>命令给master，master接收到该命令后，会立即进行持久化操作，通过命令<strong>bgsava</strong>生成一个RDB快照文件，持久化期间，如果客户端仍在写入数据，这部分数据会被保存在内存缓冲区（repl buffer）中，持久化完成以后，master会将RDB文件发送给slave，slave 将数据加载到内存中，然后master会将缓冲区的命令发送给slave节点。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ccba6ea8a9ef45619a047fd74e0ee6f5~tplv-k3u1fbpfcp-watermark.image" alt="全量同步">  </p>
+<p><strong>断点续传</strong>：当master和slave由于某些原因断开时，slave重新连接时，会发送 <strong>PSYNC(offset)</strong> 包含一个下标的命令，表示断开之前同步到了哪儿。master节点在写入数据时，会将数据写入一个缓冲区（repl backlog buffer），当master接受到 <strong>PSYNC(offset)</strong> 命令时，会先去查看offset是否在缓冲区，如果在缓存区，会将offset后面的命令发送给slave，否则直接进行一次全量同步</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9b535ecf7ddc4b26bca5dbe8aeeb7119~tplv-k3u1fbpfcp-watermark.image" alt="断点续传">  </p>
+<h3 id="主从结构可能发生的问题："><a href="#主从结构可能发生的问题：" class="headerlink" title="主从结构可能发生的问题："></a>主从结构可能发生的问题：</h3><p><strong>主从复制风暴</strong>：多个从节点同时宕机重启后，全部需要进行全量同步，导致master节点压力过大  </p>
+<p><strong>解决方案</strong>： 将将从节点挂载在某个从节点上，数据同步也从这个从节点复制。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8a1751533c3c4c36aea8e3eba291aa5b~tplv-k3u1fbpfcp-watermark.image">  </p>
+<h2 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h2><p>哨兵模式结构示意图：<br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/389cf3d4bf42416ba7e1e32a51101da7~tplv-k3u1fbpfcp-watermark.image">  </p>
+<h3 id="哨兵模式搭建，配置哨兵"><a href="#哨兵模式搭建，配置哨兵" class="headerlink" title="哨兵模式搭建，配置哨兵"></a>哨兵模式搭建，配置哨兵</h3><ol>
+<li>复制 sentinel.conf 文件到conf目录，并修改如下配置<ul>
+<li>port 26379</li>
+<li>daemonize yes</li>
+<li>pidfile “/var/run/redis-sentinel.pid”</li>
+<li>logfile “redis_sentinel_26379.log”</li>
+<li>dir “/home/redis/redis-6.0.9/sentinel_26379”</li>
+<li>sentinel monitor mymaster 172.19.14.57 6379 2</li>
+</ul>
+</li>
+<li>启动哨兵<ul>
+<li>src/redis-sentinel conf/sentinel.conf</li>
+</ul>
+</li>
+</ol>
+<h3 id="哨兵的工作原理"><a href="#哨兵的工作原理" class="headerlink" title="哨兵的工作原理"></a>哨兵的工作原理</h3><p>sentinel 哨兵是特殊的redis服务，他不对外提供读写服务，只用于监控主从结构的状态。<br>哨兵模式下，client端第一次连接哨兵找出redis主节点并缓存到本地，之后直接访问redis主节点。<br>当redis节点状态发生改变，sentinel哨兵会第一时间感知到，并将新的主节点推送给客户端。（client端订阅sentinel，一有变动直接推送）   </p>
+<p><strong>哨兵leader选举流程</strong><br>当一个 master 服务器被某 sentinel<code>[哨兵]</code>视为下线状态后，该sentinel<code>[哨兵]</code> 会与其他 sentinel<code>[哨兵]</code> 协商选出新的master，进行故障转移工作。</p>
+<p>每个发现master服务器进入下线状态的sentinel<code>[哨兵]</code>都可以要求其他sentinel<code>[哨兵]</code>选自己为“本次决策”的leader，选举是先到先得。</p>
+<p>同时每个sentinel每次选举都会自增配置纪元(选举周期)，每个纪元中只会选择一个sentinel的leader。如果所有超过一半的sentinel选举某sentinel作为leader。</p>
+<p>之后由该sentinel<code>[哨兵leader]</code>进行故障转移操作，从存活的slave中选举出新的master，这个选举过程跟集群的master选举很类似<sub>【请查看下面redis集群模式的选举】</sub>。哨兵集群只有一个哨兵节点，redis的主从也能正常运行以及选举master，如果master挂了，那唯一的那个哨兵节点就是哨兵leader了，可以正常选举新master。不过为了高可用一般都推荐至少部署三个哨兵节点。为什么推荐奇数个哨兵节点原理跟集群奇数个master节点类似。</p>
+<p><strong>哨兵模式其实就是主从结构上加了一个哨兵，所以数据同步原理和主从结构一致</strong></p>
+<h3 id="哨兵模式可能发生的问题："><a href="#哨兵模式可能发生的问题：" class="headerlink" title="哨兵模式可能发生的问题："></a>哨兵模式可能发生的问题：</h3><p><strong>访问瞬断</strong>：在主节点宕机时，哨兵会发起选举。在选举过程中，如果客户端发起请求，会发生异常。当主节点重新选举出来，又会恢复。该问题在哨兵模式下无法避免。</p>
+<h2 id="redis集群架构"><a href="#redis集群架构" class="headerlink" title="redis集群架构"></a>redis集群架构</h2><p>集群图示：<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/847252bac04744f6893d264c35175b82~tplv-k3u1fbpfcp-watermark.image"></p>
+<h3 id="集群搭建"><a href="#集群搭建" class="headerlink" title="集群搭建"></a>集群搭建</h3><ol>
+<li>复制 sentinel.conf 文件到 redis_cluster/8001/redis.conf 目录，并修改如下配置<ul>
+<li>port 8001</li>
+<li>daemonize yes    ######## 守护进程</li>
+<li>pidfile /var/run/redis_8001.pid</li>
+<li>dir /usr/local/redis-cluster/8001/</li>
+<li>replica-read-only yes                 ######## 从节点只读</li>
+<li>appendonly yes    #######开启AOF</li>
+<li>cluster-enabled yes ########开启集群模式</li>
+<li>cluster-config-file nodes-8001.conf ########### 集群信息</li>
+<li>cluster-node-timeout 15000 ############ 集群master 节点失联多久开始选举</li>
+<li>requirepass zhouxh_z  ########当前主机密码</li>
+<li>masterauth zhouxh_z   ########访问其他主机密码</li>
+</ul>
+</li>
+<li>启动集群节点<ul>
+<li>src/redis-server redis_cluster/8001/redis.conf</li>
+</ul>
+</li>
+<li>集群配置<ul>
+<li>src/redis-cli -a zhouxh –cluster create –cluster-replicas 1 172.19.14.57:8001 172.19.14.57:8002 172.19.14.57:8003 172.19.14.57:8004 172.19.14.57:8005 172.19.14.57:8006 </li>
+</ul>
+</li>
+<li>连接客户端<ul>
+<li>src/redis-cli -a zhouxh -c -h 172.19.14.57 -p 8001</li>
+</ul>
+</li>
+<li>查看集群信息<ul>
+<li>cluster info</li>
+</ul>
+</li>
+<li>查看节点列表<ul>
+<li>cluster nodes<h3 id="集群原理"><a href="#集群原理" class="headerlink" title="集群原理"></a>集群原理</h3>集群下的每个小节点的同步复制，和主从一致。</li>
+</ul>
+</li>
+</ol>
+<h4 id="槽位"><a href="#槽位" class="headerlink" title="槽位"></a>槽位</h4><p>并不是真实的物理空间，是一个虚拟的概念。<br>redisCluster 将内存虚拟划分为16384个槽位，分别分配到各个master节点中。redis在存储数据时，会对key进行Hash算法在对16383取余确保，key值必定存在集群槽位上。 </p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1f1bd2d4ab6f452f800e4dcc4a0d59bd~tplv-k3u1fbpfcp-watermark.image"></p>
+<h4 id="取余算法"><a href="#取余算法" class="headerlink" title="取余算法"></a>取余算法</h4><p>hash(key) = CRC16(key) % 16383</p>
+<h4 id="跳转重定位"><a href="#跳转重定位" class="headerlink" title="跳转重定位"></a>跳转重定位</h4><p>在集群模式下，在客户向一个redis节点发起操作命令（如 set key value），会通过<strong>取余算法</strong>计算对应的槽位，如果发现对应的槽位不在目前节点上时，会自动进行跳转重定向。 </p>
+<p>如下：原本在 8001 端口的redis，发起set操作，通过<strong>取余算法</strong>计算key，发现zhouxh_1应该命中 8002 端口的redis所在的槽位，reids进行跳转重定向，自动将值set到了对应的槽位，并跳转到了8002 端口</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d627b69392de4a9fb3b1d16c9a096b24~tplv-k3u1fbpfcp-watermark.image">  </p>
+<h4 id="网络抖动"><a href="#网络抖动" class="headerlink" title="网络抖动"></a>网络抖动</h4><p>网络波动可能导致部分master节点在短时间内连接不上，如果不进行限制，可能会发生频繁选举，进而导致脑裂问题。  </p>
+<p><code>cluster-node-timeout 15000</code><br>该配置可以使master节点在失联15000后，再进行选举。有效避免频繁选举问题</p>
+<h4 id="脑裂问题-面试常问"><a href="#脑裂问题-面试常问" class="headerlink" title="脑裂问题* 面试常问"></a>脑裂问题* <sub>面试常问</sub></h4><p>由于网络问题导致master节点和其他节点断开连接，此时master（旧）节点并没有宕机，但是其他节点认为它已经宕机了，此时slave节点将发起选举，产生一个新的master（新）节点。此时存在两个master节点，客户端认为两个master节点都正常工作，此时会向这两个master节点写入数据。当网络重新连接时，由于存在两个master节点，此时集群会将master（旧）设置为从节点（slave），挂载到master（新）上，此时从节点相当于重启，需要从master节点同步数据，这就导致了之前客户端认为正常写入（master【久】）的数据丢失了。<br>解决方法：设置半数写入配置<br><code>min‐slaves‐to‐write 1</code><br>半数写入：即一半的节点认为写入成功才算成功<br>这里的 ”1“ 可变，计算方式：（小的主从节点数-1）/2</p>
+<h4 id="redis选举原理-面试常问"><a href="#redis选举原理-面试常问" class="headerlink" title="redis选举原理* 面试常问"></a>redis选举原理* <sub>面试常问</sub></h4><ol>
+<li>当slave发现自己的master节点 挂了（fail）</li>
+<li>将自己记录的集群 currentEpoch 加1，并广播 FAILOVER_AUTH_REQUEST 信息</li>
+<li>其他节点接收到消息后，由主节点回复 FAILOVER_AUTH_ACK 信息，每个master节点只能发送一次</li>
+<li>对应的slave节点，收集并统计 FAILOVER_AUTH_ACK 信息。</li>
+<li>当收集到超过半数的ACK信息后，该节点自动升级为master节点。</li>
+<li>master（新）会播Pong消息通知其他集群节点，”我已经成功上位，你们可以歇歇了，赶紧更新你们的配置“。</li>
+</ol>
+<p>第1步结束后，第2两步并不是马上执行，中间会有一个延迟时间，每个slave节点的延迟时间不同。<br>计算规则：<code>500ms + random(0 ~ 500ms) + SLAVE_RANK * 1000ms</code><br>SLAVE_RANK：表示此slave已经从master复制数据的总量的rank。Rank越小代表已复制的数据越新。这种方<br>式下，持有最新数据的slave将会首先发起选举（理论上）。</p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">zhouxh-z</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://zhouxh-z.github.io/2021/03/10/%E4%B8%80%E6%96%87%E8%A7%A3%E8%AF%BB%20redis%20%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84/">https://zhouxh-z.github.io/2021/03/10/%E4%B8%80%E6%96%87%E8%A7%A3%E8%AF%BB%20redis%20%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">zhouxh-z</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">
+                                    <span class="chip bg-color">分布式中间件</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/04/28/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97-2-RocketMQ/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/1.jpg" class="responsive-img" alt="消息队列[2]--RocketMQ">
+                        
+                        <span class="card-title">消息队列[2]--RocketMQ</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-28
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="post-category">
+                                    分布式中间件
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">
+                        <span class="chip bg-color">消息队列</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/03/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97-1-RabbitMQ/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/18.jpg" class="responsive-img" alt="消息队列[1]--RabbitMQ">
+                        
+                        <span class="card-title">消息队列[1]--RabbitMQ</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            什么是消息队列
+消息：请求或应用间传输的数据
+队列：一种先进先出的数据结构
+消息队列：字面意思就是一种存放数据的先进先出的数据结构或者说容器
+
+总的来说：消息队列是一种服务间 异步通信组件 ，主要解决应用解耦，异步处理，流量削锋等问题，实现
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="post-category">
+                                    分布式中间件
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">
+                        <span class="chip bg-color">消息队列</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2021</span>
+            
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">zhouxh-z</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/zhouxh-z/" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:17826808007@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+	
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

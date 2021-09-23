@@ -1,0 +1,1336 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="消息队列[1]--RabbitMQ, 疯狂小周">
+    <meta name="description" content="拒绝只做 CRUD ！">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>消息队列[1]--RabbitMQ | 疯狂小周</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">疯狂小周</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">疯狂小周</div>
+        <div class="logo-desc">
+            
+            拒绝只做 CRUD ！
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/zhouxh-z/zhouxh-z.github.io" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/zhouxh-z/zhouxh-z.github.io" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/18.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">消息队列[1]--RabbitMQ</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">
+                                <span class="chip bg-color">消息队列</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="post-category">
+                                分布式中间件
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-03-10
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="什么是消息队列"><a href="#什么是消息队列" class="headerlink" title="什么是消息队列"></a>什么是消息队列</h2><ul>
+<li>消息：请求或应用间传输的数据</li>
+<li>队列：一种先进先出的数据结构</li>
+<li>消息队列：字面意思就是一种存放数据的先进先出的数据结构或者说容器</li>
+</ul>
+<p>总的来说：消息队列是一种服务间 <strong>异步通信组件</strong> ，主要解决应用解耦，异步处理，流量削锋等问题，实现高性能，高可用，可伸缩和最终一致性。</p>
+<h2 id="消息队列的使用场景"><a href="#消息队列的使用场景" class="headerlink" title="消息队列的使用场景"></a>消息队列的使用场景</h2><h3 id="1、异步处理"><a href="#1、异步处理" class="headerlink" title="1、异步处理"></a>1、异步处理</h3><span id="more"></span>
+
+<p>场景：项目之初用户体量小，用户从选商品到支付一条龙，单机完成。后来用户体量扩大，新增很多其他服务，如消费卷，积分等。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6862484dcfda4afc8dd1c743b0c43192~tplv-k3u1fbpfcp-watermark.image"><br>由于调用链路的增长，支付耗时也随之增加，影响用户体验。由此引入消息队列（MQ），通过异步处理，提高响应速度。<br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/17b63a1b22ad4bed9ef0aa217ee3d0b8~tplv-k3u1fbpfcp-watermark.image"><br>支付系统支付成功后，只需要往 MQ 中，写入一条支付成功的消息。其他系统订阅后，异步处理各自业务。用户感觉到的时长就是：支付系统的消耗时间 + 写入MQ的消耗时间。</p>
+<h3 id="2、应用解耦"><a href="#2、应用解耦" class="headerlink" title="2、应用解耦"></a>2、应用解耦</h3><ul>
+<li><p>不引入消息队列（MQ），那支付过程中的消费卷抵扣、积分抵扣等服务，就需要对应系统暴露接口，以便在支付系统中调用。<br>  如果此时需要新增一个邮件/短信系统的功能，就需要修改支付系统后重新发布应用。这也带来的不必要的维护成本。</p>
+</li>
+<li><p>引入消息队列（MQ）后，支付系统不关心有哪些系统需要知道支付成功。支付系统只需向 MQ 中写入一条支付成功的消息，其他系统订阅该消息，在接收到消息时，自发的进行自身的业务即可。</p>
+<h3 id="3、流量削峰"><a href="#3、流量削峰" class="headerlink" title="3、流量削峰"></a>3、流量削峰</h3><p>平时流量比较低，但是一到大促（比如秒杀场景），流量在某一时段突然暴增，可能出现远超服务所能承载的请求打入，导致服务宕机无法对外提供服务。</p>
+</li>
+</ul>
+<p>这种情况下引入消息队列，在大量请求打入服务时，先将请求写入队列，然后服务再按自身处理能力从MQ中拉取消息进行消费，这就达到了流量削峰的作用。</p>
+<h2 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h2><p>RabbitMQ 虽然再吞吐量上不及 kafka、rocketMQ，但是其高效的响应性，消息可靠性上是无与伦比的。完全可以支持用户体量不是那么高的应用。</p>
+<h3 id="1、RabblitMQ的工作模型"><a href="#1、RabblitMQ的工作模型" class="headerlink" title="1、RabblitMQ的工作模型"></a>1、RabblitMQ的工作模型</h3><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c5f657ca2ad545db9d23e3da4c1ffeaa~tplv-k3u1fbpfcp-watermark.image"></p>
+<ul>
+<li>producer：生产者</li>
+<li>connection：生产者/消费者 和 MQ 之间的TCP连接</li>
+<li>channel：connection内部建立的虚拟连接</li>
+<li>broker：MQ 中接受和分发消息的应用</li>
+<li>Virtual Host：为多租户考虑和安全因素考虑的虚拟分组，不同组的用户不能相互访问</li>
+<li>Exchange：交换机，生产者将消息发送到交换机，再有交换机发送到队列中</li>
+<li>Queue：队列，消息在队列中等待被消费者消费</li>
+<li>Binding：交换机和队列的绑定关系</li>
+<li>consumer：消费者，消息的最终使用者</li>
+</ul>
+<p>消息生产者通过connection连接到RabbitMQ，然后建立虚拟连接[channel]，通过channel将消息发送到exchange，因为exchange和queue绑定，所以会通过exchange直接发送并保存在queue队列中，最后消费者通过connection连接到RabbitMQ，然后建立虚拟连接[channel]，通过channel从queue中获取并消费消息。</p>
+<h3 id="2、RabbitMQ-常用的5种工作模式【共7种】"><a href="#2、RabbitMQ-常用的5种工作模式【共7种】" class="headerlink" title="2、RabbitMQ 常用的5种工作模式【共7种】"></a>2、RabbitMQ 常用的5种工作模式【共7种】</h3><ol>
+<li><p>简单模式（hello world）<br>在下图中，“P”表示消息的生产者【producer】，“C”表示消费者【consumer】，中间的框是一个队列-RabbitMQ保留消息的缓冲区。<br><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fdb9c94c706947f7a7c1d4b343b29e5a~tplv-k3u1fbpfcp-watermark.image">  </p>
+<blockquote>
+<p>在这种模式下，一个生产者、一个队列、一个消费者（<code>其实还有一个默认的，不需要我们声明的exchange</code>）</p>
+</blockquote>
+</li>
+<li><p>工作队列模式<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a1156e55da414d21b5b2aa307616f7d1~tplv-k3u1fbpfcp-watermark.image">  </p>
+<blockquote>
+<p>在这种模式下，一个生产者、一个队列，但是存在<strong>多个消费者</strong>，多个消费者共同消费队列里的消息。在这种模式下<strong>一条消息 只会 被一个消费者消费</strong>（<code>其实还有一个默认的，不需要我们声明的exchange</code>）</p>
+</blockquote>
+</li>
+<li><p>发布订阅模式<br>在下图中，“X”表示交换机【exchange】，需要我们手动声明。<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4393b1faa0304f0fb224666847ebc8a5~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<p>在这种模式下，一个生产者，一个交换机，交换机绑定多个队列，每个队列存在一个消费者。这种模式下，生产者发送的消息，每个消费者都会消费（每个消费者收到的消息是一致的）。</p>
+</blockquote>
+</li>
+<li><p>Routing 匹配模式<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c6f1812d15194804889ff6ee1c1a798f~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<p>在这种模式下，一个生产者，一个交换机，交换机绑定多个队列，每个队列存在一个消费者。在结构上和发布订阅模式完全一致，<strong>区别在于交换机绑定队列时，给每个队列设置Routing key属性，生产者发送消息时，会携带Routing key，根据Routing key交换机会将消息发送到不同的队列中</strong></p>
+</blockquote>
+</li>
+<li><p>Topic 匹配模式<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5ace17680d024f9a9e53841b004229c3~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<p>在这种模式下，一个生产者，一个交换机，交换机绑定多个队列，每个队列存在一个消费者。在结构和原理上和Routing 匹配模式非常相似，<strong>区别在于Routing匹配模式下，routing key 是一个固定的值，需要完成匹配，而Topic 匹配模式支持模糊匹配</strong>。<code>topic 模式通配符：“ * ”：匹配一个词；“ # ”：匹配一个或多个词，ams.* 能匹配 ams.insert； ams.# 可以匹配 ams.insert.abc 和 ams.insert</code></p>
+</blockquote>
+<h3 id="3、RabbitMQ-和SpringBoot-的整合"><a href="#3、RabbitMQ-和SpringBoot-的整合" class="headerlink" title="3、RabbitMQ 和SpringBoot 的整合"></a>3、RabbitMQ 和SpringBoot 的整合</h3><p>整合相关代码已上传至github <a target="_blank" rel="noopener" href="https://github.com/zhouxh-z/spring-boot-rabbitmq">zhouxh-z</a></p>
+<h4 id="3-1、生产者"><a href="#3-1、生产者" class="headerlink" title="3.1、生产者"></a>3.1、生产者</h4></li>
+</ol>
+<ul>
+<li>jar包引入<pre class=" language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-amqp<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span> 
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.boot<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-boot-starter-web<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+</code></pre>
+</li>
+<li>yml配置文件<pre class=" language-proprities"><code class="language-proprities">spring:
+  rabbitmq:
+    port: 5672
+    username: guest
+    password: guest
+    host: 101.37.10.135
+    virtual-host: /
+    template:
+      exchange: xxxxExchange
+      default-receive-queue: xxxxQueue
+      routing-key: xxxx.#
+</code></pre>
+</li>
+<li>配置类<br>配置类的作用：项目启动后在 RabbitMQ 中创建队列，创建交换机，并和队列绑定。<br>创建时间：项目启动后第一次连接mq时。<code>如果手动创建队列/交换机，并绑定，则不需要这个配置类</code><pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ProducerConfig</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">public</span> BeanFactory beanFactory<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&amp;#123;spring.rabbitmq.template.exchange&amp;#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String exchangeName<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&amp;#123;spring.rabbitmq.template.default-receive-queue&amp;#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String queueName<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&amp;#123;spring.rabbitmq.template.routing-key&amp;#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String routeName<span class="token punctuation">;</span>
+    
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span><span class="token string">"exchange"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> Exchange <span class="token function">buildExchange</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+       <span class="token keyword">return</span> ExchangeBuilder<span class="token punctuation">.</span><span class="token function">topicExchange</span><span class="token punctuation">(</span>exchangeName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span><span class="token string">"queue"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> Queue <span class="token function">buildQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> QueueBuilder<span class="token punctuation">.</span><span class="token function">durable</span><span class="token punctuation">(</span>queueName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+    
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span><span class="token string">"binder"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> Binding <span class="token function">buildBinder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        Queue queue <span class="token operator">=</span> <span class="token punctuation">(</span>Queue<span class="token punctuation">)</span> beanFactory<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token string">"queue"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Exchange exchange <span class="token operator">=</span> <span class="token punctuation">(</span>Exchange<span class="token punctuation">)</span> beanFactory<span class="token punctuation">.</span><span class="token function">getBean</span><span class="token punctuation">(</span><span class="token string">"exchange"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> BindingBuilder<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>queue<span class="token punctuation">)</span>
+               <span class="token punctuation">.</span><span class="token function">to</span><span class="token punctuation">(</span>exchange<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">with</span><span class="token punctuation">(</span>routeName<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">noargs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+</code></pre>
+</li>
+<li>消息发送类<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RestController</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ProducerSender</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    RabbitTemplate rabbitTemplate<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&amp;#123;spring.rabbitmq.template.exchange&amp;#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String exchangeName<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&amp;#123;spring.rabbitmq.template.routing-key&amp;#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> String routeName<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/sendMSG"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">sendMSG</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        rabbitTemplate<span class="token punctuation">.</span><span class="token function">convertAndSend</span><span class="token punctuation">(</span>exchangeName<span class="token punctuation">,</span>routeName<span class="token punctuation">,</span><span class="token string">"testMSG"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+</code></pre>
+<h4 id="3-2、消费者"><a href="#3-2、消费者" class="headerlink" title="3.2、消费者"></a>3.2、消费者</h4></li>
+<li>依赖和配置文件<br>与生产者一致</li>
+<li>消息接收类<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Component</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Consumer</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// ackMode = "MANUAL" 如果需要手动签收消息，则设置，否则不需要</span>
+    <span class="token annotation punctuation">@RabbitListener</span><span class="token punctuation">(</span>queues <span class="token operator">=</span> <span class="token string">"zhouxhQueue"</span><span class="token punctuation">,</span>ackMode <span class="token operator">=</span> <span class="token string">"MANUAL"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">consumer</span><span class="token punctuation">(</span>Message ms<span class="token punctuation">,</span> Channel channel<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 执行业务，伪代码</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>ms<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 手动签收</span>
+        channel<span class="token punctuation">.</span><span class="token function">basicAck</span><span class="token punctuation">(</span>ms<span class="token punctuation">.</span><span class="token function">getMessageProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDeliveryTag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 拒收,第二个 Boolean 入参表示消息是否 返回 对列，false表示消息直接丢弃</span>
+        <span class="token comment" spellcheck="true">// 如果返回队列，存在一个问题 ，该消息将一直重新被消费,需要手动实现重试次数，比如重试次数保存到缓存中，进行手动判断</span>
+        <span class="token comment" spellcheck="true">//channel.basicNack(ms.getMessageProperties().getDeliveryTag(),true,true);</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 id="4、RebbitMQ-高可用集群搭建"><a href="#4、RebbitMQ-高可用集群搭建" class="headerlink" title="4、RebbitMQ 高可用集群搭建"></a>4、RebbitMQ 高可用集群搭建</h3></li>
+</ul>
+<ol>
+<li>首先搭建好两台单机 RabbitMQ，并分别启动</li>
+<li><code>rabbitmqctl stop_app</code> 两台单机 RabbitMQ 都停止对外服务</li>
+<li><code>rabbitmqctl join_cluster rabbit@101.37.10.135</code> 分别将两台 RabbitMQ 加入服务</li>
+<li><code>rabbitmqctl start_app</code> 分别将两台 RabbitMQ 重新开启对外服务</li>
+<li>通过<code>rabbitmqctl cluster_status</code> 就可以查看 RabbitMQ 的集群状态了<h3 id="5、RabbitMQ-高级特性"><a href="#5、RabbitMQ-高级特性" class="headerlink" title="5、RabbitMQ 高级特性"></a>5、RabbitMQ 高级特性</h3></li>
+</ol>
+<h4 id="5-1、RabbitMQ-消息的可靠性传递是如何保障的？"><a href="#5-1、RabbitMQ-消息的可靠性传递是如何保障的？" class="headerlink" title="5.1、RabbitMQ 消息的可靠性传递是如何保障的？"></a>5.1、RabbitMQ 消息的可靠性传递是如何保障的？</h4><ol>
+<li><p>从生产者到交换机，Confirm 确认模式(springboot-rabbitmq 默认开启)</p>
+<ul>
+<li><p>生产者将消息发送到exchange时，会通过confirm回调，告知生产者发送状态。</p>
+<pre class=" language-java"><code class="language-java">  <span class="token comment" spellcheck="true">//定义回调</span>
+  rabbitTemplate<span class="token punctuation">.</span><span class="token function">setConfirmCallback</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RabbitTemplate<span class="token punctuation">.</span>ConfirmCallback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+      <span class="token comment" spellcheck="true">/**
+       *
+       * @param correlationData 相关配置信息
+       * @param ack   exchange交换机 是否成功收到了消息。true 成功，false代表失败
+       * @param cause 失败原因
+       */</span>
+      <span class="token annotation punctuation">@Override</span>
+      <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">confirm</span><span class="token punctuation">(</span>CorrelationData correlationData<span class="token punctuation">,</span> <span class="token keyword">boolean</span> ack<span class="token punctuation">,</span> String cause<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+          System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"confirm方法被执行了...."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+           <span class="token comment" spellcheck="true">//ack 为  true表示 消息已经到达交换机</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>ack<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+              <span class="token comment" spellcheck="true">//接收成功</span>
+              System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"接收成功消息"</span> <span class="token operator">+</span> cause<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span> <span class="token keyword">else</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+              <span class="token comment" spellcheck="true">//接收失败</span>
+              System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"接收失败消息"</span> <span class="token operator">+</span> cause<span class="token punctuation">)</span><span class="token punctuation">;</span>
+              <span class="token comment" spellcheck="true">//做一些处理，让消息再次发送。</span>
+          <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+      <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+  <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>从交换机到队列，return 回退模式 （开启 rabbitmq.publisher-returns: true）</p>
+<ul>
+<li><p>exchange 收到消息后，通过routing key匹配对应的 queue时，会通过return 回调，告知生产者发送状态</p>
+<pre class=" language-java"><code class="language-java">  <span class="token comment" spellcheck="true">//设置交换机处理失败消息的模式   为true的时候，消息达到不了 队列时，会将消息重新返回给生产者</span>
+  rabbitTemplate<span class="token punctuation">.</span><span class="token function">setMandatory</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment" spellcheck="true">//定义回调</span>
+  rabbitTemplate<span class="token punctuation">.</span><span class="token function">setReturnCallback</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RabbitTemplate<span class="token punctuation">.</span>ReturnCallback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+      <span class="token comment" spellcheck="true">/**
+       *
+       * @param message   消息对象
+       * @param replyCode 错误码
+       * @param replyText 错误信息
+       * @param exchange  交换机
+       * @param routingKey 路由键
+       */</span>
+      <span class="token annotation punctuation">@Override</span>
+      <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">returnedMessage</span><span class="token punctuation">(</span>Message message<span class="token punctuation">,</span> <span class="token keyword">int</span> replyCode<span class="token punctuation">,</span> String replyText<span class="token punctuation">,</span> String exchange<span class="token punctuation">,</span> String routingKey<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+          System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"return 执行了...."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+          System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"message:"</span><span class="token operator">+</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"replyCode:"</span><span class="token operator">+</span>replyCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"replyText:"</span><span class="token operator">+</span>replyText<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"exchange:"</span><span class="token operator">+</span>exchange<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"routingKey:"</span><span class="token operator">+</span>routingKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+          <span class="token comment" spellcheck="true">//处理</span>
+      <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+  <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>从队列到消费者，签收机制（开启：acknowledge-mode: manual）</p>
+<ul>
+<li>消费者从队列中拉取消息，如果在消息消费过程中出现异常，我们可以手动拒收消息，然后重新拉取消息。否则正常签收。<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 手动签收</span>
+channel<span class="token punctuation">.</span><span class="token function">basicAck</span><span class="token punctuation">(</span>ms<span class="token punctuation">.</span><span class="token function">getMessageProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDeliveryTag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 拒收,第二个 Boolean 入参表示消息是否 返回 对列</span>
+<span class="token comment" spellcheck="true">// 如果返回队列，存在一个问题 ，该消息将一直重新被消费,需要手动实现重试次数，比如保存到缓存中</span>
+channel<span class="token punctuation">.</span><span class="token function">basicNack</span><span class="token punctuation">(</span>ms<span class="token punctuation">.</span><span class="token function">getMessageProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDeliveryTag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>exchange、queue、message 等持久化</p>
+<h4 id="5-2、限流"><a href="#5-2、限流" class="headerlink" title="5.2、限流"></a>5.2、限流</h4><p>在大促或者秒杀场景下，生产者瞬间打入大量消息，可能因为消费者消费能力不够的问题，导致服务宕机。<br>应对这种瞬间的大流量，消费者的限流是非常有必要的。</p>
+</li>
+</ol>
+<p>通过指定监听器工厂，可以达到限流的效果</p>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RabbitMqConfig</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> CachingConnectionFactory connectionFactory<span class="token punctuation">;</span>
+    
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"listenerContainer"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> SimpleRabbitListenerContainerFactory <span class="token function">listenerContainer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        SimpleRabbitListenerContainerFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleRabbitListenerContainerFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        factory<span class="token punctuation">.</span><span class="token function">setConnectionFactory</span><span class="token punctuation">(</span>connectionFactory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 设置限流数量</span>
+        factory<span class="token punctuation">.</span><span class="token function">setPrefetchCount</span><span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> factory<span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+</code></pre>
+<p>在 <code>@RabbitListener</code> 注解中指定 containerFactory</p>
+<pre class=" language-java"><code class="language-java"><span class="token annotation punctuation">@RabbitListener</span><span class="token punctuation">(</span>queues <span class="token operator">=</span> <span class="token string">"zhouxhQueue"</span><span class="token punctuation">,</span>ackMode <span class="token operator">=</span> <span class="token string">"MANUAL"</span><span class="token punctuation">,</span>containerFactory <span class="token operator">=</span> <span class="token string">"listenerContainer"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">consumer</span><span class="token punctuation">(</span>Message ms<span class="token punctuation">,</span> Channel channel<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>ms<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 手动签收</span>
+    channel<span class="token punctuation">.</span><span class="token function">basicAck</span><span class="token punctuation">(</span>ms<span class="token punctuation">.</span><span class="token function">getMessageProperties</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getDeliveryTag</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token boolean">true</span><span class="token punctuation">)</span>  
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+</code></pre>
+<h4 id="5-3、延迟队列"><a href="#5-3、延迟队列" class="headerlink" title="5.3、延迟队列"></a>5.3、延迟队列</h4><p>RabbitMQ 没有自带的延迟队列，但是我们可以通过 <strong>TTL队列 和 死信队列</strong> 完成延迟队列的效果。</p>
+<ol>
+<li>TTL：配置了超时时间的队列，该队列中的消息达到超时时间还没有被消费，会得删除</li>
+<li>死信队列：对于RabbitMQ来说，其实是死信交换机，我们在一个队列中绑定一个死信交换机，然后当消息死信后就会通过这个死信交换机，进入一个普通队列。<br>下图中的“DLX”其实就是DEAD LETTER EXCHANGE（死信交换机）。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/be55018fc8ec4983ae3c9b7bb64d38fd~tplv-k3u1fbpfcp-watermark.image"></li>
+</ol>
+<p><strong>进入死心队列的三种方式</strong></p>
+<ul>
+<li>队列中的消息已经满了，此时新进入的消息会直接进入死信队列</li>
+<li>消费者拒绝签收，且不重入队列</li>
+<li>原队列设置了超时时间，消息在队列中达到超时时间没有被消费</li>
+</ul>
+<p><strong>那么延迟队列是怎么根据这两种队列完成的呢？</strong><br>以我们在网上购物，下单了但是还没付款这样一个场景来说明：  </p>
+<ol>
+<li>首先我们在订单系统下单，将订单信息发送到TTL队列<sub>[假设订单保存时间为30分钟，即30分钟内付款，订单有效，否则订单过期]</sub></li>
+<li>期间我们都没有付款，那么过了30分钟该订单信息会从TTL队列中删除。</li>
+<li>从TTL队列中删除的订单会被发送到死信队列，然后这个消息会被库存系统消费。判断是取消订单，还是正常发货。<br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/573a170d9bc6400b868596b28b701f96~tplv-k3u1fbpfcp-watermark.image"><h4 id="5-4、消息幂等性保障（消息重复读取）"><a href="#5-4、消息幂等性保障（消息重复读取）" class="headerlink" title="5.4、消息幂等性保障（消息重复读取）"></a>5.4、消息幂等性保障（消息重复读取）</h4>在发送消息时，携带version，在消费者消费并将消息保存在数据库时，通过乐观锁机制，保障幂等性。</li>
+</ol>
+<h4 id="5-5、消息积压问题"><a href="#5-5、消息积压问题" class="headerlink" title="5.5、消息积压问题"></a>5.5、消息积压问题</h4><p>由于大促或者秒杀等场景，导致的消息积压问题。  </p>
+<ol>
+<li>通过工作队列模式增加消费者，提高消息消费速度。</li>
+<li>消费者先将消息写入数据库，然后业务代码从数据库读取消息进行处理</li>
+</ol>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">zhouxh-z</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://zhouxh-z.github.io/2021/03/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97-1-RabbitMQ/">https://zhouxh-z.github.io/2021/03/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97-1-RabbitMQ/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">zhouxh-z</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">
+                                    <span class="chip bg-color">消息队列</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/03/10/%E4%B8%80%E6%96%87%E8%A7%A3%E8%AF%BB%20redis%20%E4%B8%BB%E4%BB%8E%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/8.jpg" class="responsive-img" alt="一文解读 redis 主从/哨兵/集群架构">
+                        
+                        <span class="card-title">一文解读 redis 主从/哨兵/集群架构</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            主从主从结构示意图：  
+主从架构搭建，配置从节点：
+复制 redis.conf 文件，并修改如下配置
+port 8001
+pidfile /var/redis_8001.pid
+logfile 8001.log
+dir /usr/loca
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/redis/" class="post-category">
+                                    redis
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%AD%E9%97%B4%E4%BB%B6/">
+                        <span class="chip bg-color">分布式中间件</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/03/10/AOP-%E4%B8%89%E6%AD%A5%E8%B5%B0%EF%BC%9F/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/18.jpg" class="responsive-img" alt="spring源码研读-AOP-三步走？">
+                        
+                        <span class="card-title">spring源码研读-AOP-三步走？</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            本文将基于java-config（注解）研读 spring-AOP 源码
+AOP的使用
+配置类上添加@EnableAspectJAutoProxy注解 [开启AOP功能]
+
+AOP bean对象添加@Aspect注解
+@Aspect
+@Co
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/spring/" class="post-category">
+                                    spring
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2021</span>
+            
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">zhouxh-z</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/zhouxh-z/" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:17826808007@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+	
+    
+
+    
+
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
