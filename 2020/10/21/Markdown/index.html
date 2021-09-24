@@ -33,6 +33,16 @@
 
 
 
+   <style>
+    body{
+       background-image: url(https://cdn.jsdelivr.net/gh/Tokisaki-Galaxy/res/site/medias/background.jpg);
+       background-repeat:no-repeat;
+       background-size:cover;
+       background-attachment:fixed;
+    }
+</style>
+
+
 
 <body>
     <header class="navbar-fixed">
@@ -461,18 +471,43 @@
                 
 
                 
-
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-09-24
+                </div>
                 
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    673
+                </div>
+                
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    2 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
             </div>
         </div>
         <hr class="clearfix">
 
         
 
+        
+        <!-- 代码块折行 -->
+        <style type="text/css">
+            code[class*="language-"], pre[class*="language-"] { white-space: pre-wrap !important; }
+        </style>
         
 
         <div class="card-content article-card-content">
@@ -491,59 +526,59 @@
 <h3 id="段落格式"><a href="#段落格式" class="headerlink" title="段落格式"></a>段落格式</h3><hr>
 <p><strong>换行</strong><br>段尾两个空格加回车</p>
 <span id="more"></span>
-<pre><code>换行  // 此处存在两个空格
+<pre class=" language-Markdown"><code class="language-Markdown">换行  // 此处存在两个空格
 段尾两个空格加回车
 </code></pre>
 <p><strong>开始新的段落</strong>  </p>
 <p>中间空一行来表示重新开始一个段落</p>
-<pre><code>**开始新的段落**  
+<pre class=" language-Markdown"><code class="language-Markdown">**开始新的段落**  
 
 中间空一行来表示重新开始一个段落
 </code></pre>
 <h3 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h3><hr>
 <p><strong>加粗</strong></p>
-<pre><code>**加粗**
+<pre class=" language-Markdown"><code class="language-Markdown">**加粗**
 __加粗__
 </code></pre>
 <p><em>斜体</em></p>
-<pre><code>*斜体*
+<pre class=" language-Markdown"><code class="language-Markdown">*斜体*
 _斜体_
 </code></pre>
 <p><em><strong>斜体加粗</strong></em></p>
-<pre><code>***斜体加粗***
+<pre class=" language-Markdown"><code class="language-Markdown">***斜体加粗***
 ___斜体加粗___
 </code></pre>
 <p><font face="华文彩云" >字体样式</font></p>
-<pre><code>// 直接在face中注明字体
-&lt;font face=&quot;微软雅黑&quot; &gt;微软雅黑&lt;/font&gt;
-&lt;font face=&quot;华文彩云&quot; &gt;华文彩云&lt;/font&gt;
+<pre class=" language-Markdown"><code class="language-Markdown">// 直接在face中注明字体
+<font face="微软雅黑" >微软雅黑</font>
+<font face="华文彩云" >华文彩云</font>
 </code></pre>
 <p><font color=#FF000 >字体颜色</font></p>
-<pre><code>&lt;font color=#FF000 &gt;红色&lt;/font&gt;
-&lt;font color=#008000 &gt;绿色&lt;/font&gt;
-&lt;font color=#FFFF00 &gt;黄色&lt;/font&gt;
+<pre class=" language-Markdown"><code class="language-Markdown"><font color=#FF000 >红色</font>
+<font color=#008000 >绿色</font>
+<font color=#FFFF00 >黄色</font>
 </code></pre>
 <p>字体大小</p>
-<pre><code>// size 1-7 默认：3
-&lt;font size=5 &gt;字体大小&lt;/font&gt;
+<pre class=" language-Markdown"><code class="language-Markdown">// size 1-7 默认：3
+<font size=5 >字体大小</font>
 </code></pre>
 <h3 id="常用的线"><a href="#常用的线" class="headerlink" title="常用的线"></a>常用的线</h3><hr>
 <p><strong>分隔线</strong></p>
 <hr>
-<pre><code>// 需3个以上
+<pre class=" language-Markdown"><code class="language-Markdown">// 需3个以上
 减号线：---
 星号：***
 下划线：___
 </code></pre>
 <p><strong><del>删除线</del></strong>  </p>
-<pre><code>~~删除线~~
+<pre class=" language-Markdown"><code class="language-Markdown">~~删除线~~
 </code></pre>
 <p><u>下划线</u></p>
-<pre><code>&lt;u&gt;下划线&lt;/u&gt;
+<pre class=" language-Markdown"><code class="language-Markdown"><u>下划线</u>
 </code></pre>
 <h3 id="脚注"><a href="#脚注" class="headerlink" title="脚注"></a>脚注</h3><hr>
 <p>hexo <strong>hexo-renderer-markdown</strong> 插件不支持<em>脚注</em><br>请安装 <strong>hexo-renderer-markdown-it</strong><br>语法如下：</p>
-<pre><code>创建脚注格式类似这样  [^脚注]。
+<pre class=" language-Markdown"><code class="language-Markdown">创建脚注格式类似这样  [^脚注]。
 [^脚注]: 菜鸟教程 -- 学的不仅是技术，更是梦想！！！
 </code></pre>
 <h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3><hr>
@@ -552,7 +587,7 @@ ___斜体加粗___
 <li>第一</li>
 <li>第二</li>
 </ul>
-<pre><code>// 可以用 * + - 
+<pre class=" language-Markdown"><code class="language-Markdown">// 可以用 * + - 
 * 第一
 * 第二
 </code></pre>
@@ -561,7 +596,7 @@ ___斜体加粗___
 <li>第一项、</li>
 <li>第二项、</li>
 </ol>
-<pre><code>// 必须时英文状态下的.+空格
+<pre class=" language-Markdown"><code class="language-Markdown">// 必须时英文状态下的.+空格
 1. 第一项、
 2. 第二项、
 </code></pre>
@@ -576,7 +611,7 @@ ___斜体加粗___
 </ul>
 </li>
 </ol>
-<pre><code>1. 第一项
+<pre class=" language-Markdown"><code class="language-Markdown">1. 第一项
     - 第一项的第一元素
 2. 第二项
     - 第二项的第一元素
@@ -588,10 +623,10 @@ ___斜体加粗___
 <p>可以多层，最后6层</p>
 </blockquote>
 </blockquote>
-<pre><code>&gt; 区块引用
-&gt; 区块展示
-&gt; 代码如下
-&gt;&gt; 可以多层，最后6层
+<pre class=" language-Markdown"><code class="language-Markdown">> 区块引用
+> 区块展示
+> 代码如下
+>> 可以多层，最后6层
 </code></pre>
 <p><strong>区块可以和列表配合使用</strong></p>
 <ul>
@@ -604,29 +639,29 @@ ___斜体加粗___
 </blockquote>
 </li>
 </ul>
-<pre><code>- 第一层
-    &gt; 第一层内容
-    &gt; 展示如下
+<pre class=" language-Markdown"><code class="language-Markdown">- 第一层
+    > 第一层内容
+    > 展示如下
 - 第二层
-    &gt; 代码如下
+    > 代码如下
 </code></pre>
 <h3 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h3><hr>
 <p><strong><code>单行代码块</code></strong>  </p>
-<pre><code>` 单行代码块 `
+<pre class=" language-Markdown"><code class="language-Markdown">` 单行代码块 `
 </code></pre>
-<pre><code>多行代码块 
+<pre class=" language-Markdown"><code class="language-Markdown">多行代码块 
 </code></pre>
-<pre><code>​```
+<pre class=" language-Markdown"><code class="language-Markdown">```
 多行代码块 
 ​```
 </code></pre>
 <h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><hr>
 <p><a href="wwww.baidu.com">百度</a></p>
-<pre><code>[百度](wwww.baidu.com)
+<pre class=" language-Markdown"><code class="language-Markdown">[百度](wwww.baidu.com)
 </code></pre>
 <p><strong>高级用法</strong><br>我们可以通过变量来设置一个链接，变量赋值在文档末尾进行：</p>
 <p>这个链接用 1 作为网址变量 <a target="_blank" rel="noopener" href="http://www.google.com/">Google</a><br>这个链接用 runoob 作为网址变量 <a target="_blank" rel="noopener" href="https://baidu.com/">百度</a><br>然后在文档的结尾为变量赋值（网址）</p>
-<pre><code>这个链接用 1 作为网址变量 [Google][1]
+<pre class=" language-Markdown"><code class="language-Markdown">这个链接用 1 作为网址变量 [Google][1]
 这个链接用 runoob 作为网址变量 [百度][baidu]
 然后在文档的结尾为变量赋值（网址）
 
@@ -635,7 +670,7 @@ ___斜体加粗___
 </code></pre>
 <h3 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h3><hr>
 <p><img src="http://static.runoob.com/images/runoob-logo.png" alt="RUNOOB 图标"></p>
-<pre><code>![RUNOOB 图标](http://static.runoob.com/images/runoob-logo.png)
+<pre class=" language-Markdown"><code class="language-Markdown">![RUNOOB 图标](http://static.runoob.com/images/runoob-logo.png)
 </code></pre>
 
                 
@@ -976,6 +1011,9 @@ redis 概述
             |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">42.4k</span>&nbsp;字
             
             
             

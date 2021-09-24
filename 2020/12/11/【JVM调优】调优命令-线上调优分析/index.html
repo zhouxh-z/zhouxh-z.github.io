@@ -33,6 +33,16 @@
 
 
 
+   <style>
+    body{
+       background-image: url(https://cdn.jsdelivr.net/gh/Tokisaki-Galaxy/res/site/medias/background.jpg);
+       background-repeat:no-repeat;
+       background-size:cover;
+       background-attachment:fixed;
+    }
+</style>
+
+
 
 <body>
     <header class="navbar-fixed">
@@ -461,12 +471,32 @@
                 
 
                 
-
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-09-23
+                </div>
                 
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.4k
+                </div>
+                
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    6 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
             </div>
         </div>
         <hr class="clearfix">
@@ -474,10 +504,15 @@
         
 
         
+        <!-- 代码块折行 -->
+        <style type="text/css">
+            code[class*="language-"], pre[class*="language-"] { white-space: pre-wrap !important; }
+        </style>
+        
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="常用-JVM-调优命令"><a href="#常用-JVM-调优命令" class="headerlink" title="常用 JVM 调优命令"></a>常用 JVM 调优命令</h2><h3 id="JPS-—-查看程序对应的PID"><a href="#JPS-—-查看程序对应的PID" class="headerlink" title="JPS — 查看程序对应的PID"></a>JPS — 查看程序对应的PID</h3><pre><code>[root@ams_cms01 tes]# jps
+                <h2 id="常用-JVM-调优命令"><a href="#常用-JVM-调优命令" class="headerlink" title="常用 JVM 调优命令"></a>常用 JVM 调优命令</h2><h3 id="JPS-—-查看程序对应的PID"><a href="#JPS-—-查看程序对应的PID" class="headerlink" title="JPS — 查看程序对应的PID"></a>JPS — 查看程序对应的PID</h3><pre class=" language-JAVA"><code class="language-JAVA">[root@ams_cms01 tes]# jps
 25841 Starter
 26691 jar
 13332 jar
@@ -487,10 +522,10 @@
 </code></pre>
 <span id="more"></span>
 
-<h3 id="JMAP-—查找线程内存使用情况"><a href="#JMAP-—查找线程内存使用情况" class="headerlink" title="JMAP —查找线程内存使用情况"></a>JMAP —查找线程内存使用情况</h3><h4 id="JMAP打印线程内类实例数和内存量"><a href="#JMAP打印线程内类实例数和内存量" class="headerlink" title="JMAP打印线程内类实例数和内存量"></a>JMAP打印线程内类实例数和内存量</h4><pre><code>// 可以查看线程中类的实例数和内存量
+<h3 id="JMAP-—查找线程内存使用情况"><a href="#JMAP-—查找线程内存使用情况" class="headerlink" title="JMAP —查找线程内存使用情况"></a>JMAP —查找线程内存使用情况</h3><h4 id="JMAP打印线程内类实例数和内存量"><a href="#JMAP打印线程内类实例数和内存量" class="headerlink" title="JMAP打印线程内类实例数和内存量"></a>JMAP打印线程内类实例数和内存量</h4><pre class=" language-JAVA"><code class="language-JAVA">// 可以查看线程中类的实例数和内存量
 jmap -histo 13332
 </code></pre>
-<pre><code> num     #instances         #bytes  class name
+<pre class=" language-JAVA"><code class="language-JAVA"> num     #instances         #bytes  class name
 ----------------------------------------------
    1:         15760       47434048  [B
    2:        161343       21937496  [C
@@ -504,9 +539,9 @@ jmap -histo 13332
   10:         27057        1103008  [Ljava.lang.String;
   11:         31809        1017888  java.lang.ref.WeakReference
 </code></pre>
-<h4 id="JMAP打印堆栈信息"><a href="#JMAP打印堆栈信息" class="headerlink" title="JMAP打印堆栈信息"></a>JMAP打印堆栈信息</h4><pre><code>jmap -heap 13332
+<h4 id="JMAP打印堆栈信息"><a href="#JMAP打印堆栈信息" class="headerlink" title="JMAP打印堆栈信息"></a>JMAP打印堆栈信息</h4><pre class=" language-JAVA"><code class="language-JAVA">jmap -heap 13332
 </code></pre>
-<pre><code>Attaching to process ID 13332, please wait...
+<pre class=" language-JAVA"><code class="language-JAVA">Attaching to process ID 13332, please wait...
 Debugger attached successfully.
 Server compiler detected.
 JVM version is 25.172-b11
@@ -551,12 +586,12 @@ PS Old Generation
    free     = 24046216 (22.93225860595703MB)
    81.94310345987635% used
 </code></pre>
-<h3 id="Jstack-—-查看线程情况"><a href="#Jstack-—-查看线程情况" class="headerlink" title="Jstack — 查看线程情况"></a>Jstack — 查看线程情况</h3><pre><code>jstack 13332
+<h3 id="Jstack-—-查看线程情况"><a href="#Jstack-—-查看线程情况" class="headerlink" title="Jstack — 查看线程情况"></a>Jstack — 查看线程情况</h3><pre class=" language-JAVA"><code class="language-JAVA">jstack 13332
 </code></pre>
-<pre><code>&quot;DubboServerHandler-172.10.0.7:28999-thread-79&quot; #539 daemon prio=5 os_prio=0 tid=0x00007eff2c05e000 nid=0x1164 waiting on condition [0x00007efe3b9f8000]
+<pre class=" language-JAVA"><code class="language-JAVA">"DubboServerHandler-172.10.0.7:28999-thread-79" #539 daemon prio=5 os_prio=0 tid=0x00007eff2c05e000 nid=0x1164 waiting on condition [0x00007efe3b9f8000]
    java.lang.Thread.State: WAITING (parking)
         at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  &lt;0x00000000f25f76b8&gt; (a java.util.concurrent.SynchronousQueue$TransferStack)
+        - parking to wait for  <0x00000000f25f76b8> (a java.util.concurrent.SynchronousQueue$TransferStack)
         at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
         at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:458)
         at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:362)
@@ -566,10 +601,10 @@ PS Old Generation
         at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
         at java.lang.Thread.run(Thread.java:748)
 
-&quot;DubboServerHandler-172.10.0.7:28999-thread-78&quot; #534 daemon prio=5 os_prio=0 tid=0x00007eff2c05d000 nid=0x939 waiting on condition [0x00007efe3bbfa000]
+"DubboServerHandler-172.10.0.7:28999-thread-78" #534 daemon prio=5 os_prio=0 tid=0x00007eff2c05d000 nid=0x939 waiting on condition [0x00007efe3bbfa000]
    java.lang.Thread.State: WAITING (parking)
         at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  &lt;0x00000000f25f76b8&gt; (a java.util.concurrent.SynchronousQueue$TransferStack)
+        - parking to wait for  <0x00000000f25f76b8> (a java.util.concurrent.SynchronousQueue$TransferStack)
         at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
         at java.util.concurrent.SynchronousQueue$TransferStack.awaitFulfill(SynchronousQueue.java:458)
         at java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:362)
@@ -579,17 +614,17 @@ PS Old Generation
         at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
         at java.lang.Thread.run(Thread.java:748)
 </code></pre>
-<h3 id="JSTAT-—-调优重点：查看-GC-情况"><a href="#JSTAT-—-调优重点：查看-GC-情况" class="headerlink" title="JSTAT — 调优重点：查看 GC 情况"></a>JSTAT — 调优重点：查看 GC 情况</h3><pre><code>// 监控pid = 13332 的线程，每过 1 秒打印 1 次，打印 10 次
+<h3 id="JSTAT-—-调优重点：查看-GC-情况"><a href="#JSTAT-—-调优重点：查看-GC-情况" class="headerlink" title="JSTAT — 调优重点：查看 GC 情况"></a>JSTAT — 调优重点：查看 GC 情况</h3><pre class=" language-JAVA"><code class="language-JAVA">// 监控pid = 13332 的线程，每过 1 秒打印 1 次，打印 10 次
 jstat -gc 13332 1000 10
 </code></pre>
-<pre><code> S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   
+<pre class=" language-JAVA"><code class="language-JAVA"> S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   
 1536.0 1536.0 448.0   0.0   40448.0   5105.7   130048.0   106565.4  79664.0 75844.2 9776.0 9048.1   4082   33.338  248    31.693   65.032
 1536.0 1536.0 448.0   0.0   40448.0   5109.8   130048.0   106565.4  79664.0 75844.2 9776.0 9048.1   4082   33.338  248    31.693   65.032
 1536.0 1536.0 448.0   0.0   40448.0   5225.4   130048.0   106565.4  79664.0 75844.2 9776.0 9048.1   4082   33.338  248    31.693   65.032
 1536.0 1536.0 448.0   0.0   40448.0   5225.4   130048.0   106565.4  79664.0 75844.2 9776.0 9048.1   4082   33.338  248    31.693   65.032
 </code></pre>
 <p><strong>字段意义</strong></p>
-<pre><code>S0C：第一个幸存区的大小，单位KB
+<pre class=" language-JAVA"><code class="language-JAVA">S0C：第一个幸存区的大小，单位KB
 S1C：第二个幸存区的大小
 S0U：第一个幸存区的使用大小
 S1U：第二个幸存区的使用大小
@@ -612,7 +647,7 @@ GCT：垃圾回收消耗总时间，单位s
 <h2 id="线上调优分析"><a href="#线上调优分析" class="headerlink" title="线上调优分析"></a>线上调优分析</h2><p>上个月有个新项目上线了，中间好像也没什么告警报错。<br>今天上生产环境查看运行情况时发现，该应用已经进行了近250次 Full GC 了。平均3个小时发生一次！emmm…. 好在还没人投诉。  </p>
 <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4548dd5e57d1408cbdddbe0d3e995421~tplv-k3u1fbpfcp-watermark.image"></p>
 <p><strong>jmap -heap</strong>查看程序内存：</p>
-<pre><code>Heap Configuration:
+<pre class=" language-JAVA"><code class="language-JAVA">Heap Configuration:
    MinHeapFreeRatio         = 0
    MaxHeapFreeRatio         = 100
    MaxHeapSize              = 268435456 (256.0MB)
@@ -984,6 +1019,9 @@ GCT：垃圾回收消耗总时间，单位s
             |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">42.4k</span>&nbsp;字
             
             
             

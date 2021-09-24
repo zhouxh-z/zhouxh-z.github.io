@@ -33,6 +33,16 @@
 
 
 
+   <style>
+    body{
+       background-image: url(https://cdn.jsdelivr.net/gh/Tokisaki-Galaxy/res/site/medias/background.jpg);
+       background-repeat:no-repeat;
+       background-size:cover;
+       background-attachment:fixed;
+    }
+</style>
+
+
 
 <body>
     <header class="navbar-fixed">
@@ -461,18 +471,43 @@
                 
 
                 
-
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
+                    2021-09-24
+                </div>
                 
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    625
+                </div>
+                
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    2 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
             </div>
         </div>
         <hr class="clearfix">
 
         
 
+        
+        <!-- 代码块折行 -->
+        <style type="text/css">
+            code[class*="language-"], pre[class*="language-"] { white-space: pre-wrap !important; }
+        </style>
         
 
         <div class="card-content article-card-content">
@@ -490,28 +525,28 @@
 </ol>
 </blockquote>
 <h3 id="如何使用bin-log"><a href="#如何使用bin-log" class="headerlink" title="如何使用bin-log"></a>如何使用bin-log</h3><p>修改mysql配置文件/etc/my.cnf</p>
-<pre><code>log‐bin= /data/mysql/bin/mysql-bin
-# mysql 版本高于5.7 需要额外配置，唯一id
-server‐id= 1212
-# binlog格式，有3种statement,row,mixed
-binlog‐format=ROW
-# 什么时候进行刷盘，配置1就是每次操作都进行刷盘写入，0 则是将刷盘交给系统决什么时候进行
-sync‐binlog=1
+<pre class=" language-java"><code class="language-java">log‐bin<span class="token operator">=</span> <span class="token operator">/</span>data<span class="token operator">/</span>mysql<span class="token operator">/</span>bin<span class="token operator">/</span>mysql<span class="token operator">-</span>bin
+# mysql 版本高于<span class="token number">5.7</span> 需要额外配置，唯一id
+server‐id<span class="token operator">=</span> <span class="token number">1212</span>
+# binlog格式，有<span class="token number">3</span>种statement<span class="token punctuation">,</span>row<span class="token punctuation">,</span>mixed
+binlog‐format<span class="token operator">=</span>ROW
+# 什么时候进行刷盘，配置<span class="token number">1</span>就是每次操作都进行刷盘写入，<span class="token number">0</span> 则是将刷盘交给系统决什么时候进行
+sync‐binlog<span class="token operator">=</span><span class="token number">1</span>
 </code></pre>
 <p>检查开启状态</p>
-<pre><code>show variables like &#39;%log_bin%&#39;;
+<pre class=" language-JAVA"><code class="language-JAVA">show variables like '%log_bin%';
 </code></pre>
 <p>如果得到如下（log_bin | ON）表示正常开启，如下：</p>
-<pre><code>+---------------------------------+---------------------------------+
-| Variable_name                   | Value                           |
-+---------------------------------+---------------------------------+
-| log_bin                         | ON                              |
-| log_bin_basename                | /data/mysql/bin/mysql-bin       |
-| log_bin_index                   | /data/mysql/bin/mysql-bin.index |
-| log_bin_trust_function_creators | OFF                             |
-| log_bin_use_v1_row_events       | OFF                             |
-| sql_log_bin                     | ON                              |
-+---------------------------------+---------------------------------+
+<pre class=" language-java"><code class="language-java"><span class="token operator">+</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span><span class="token operator">+</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span><span class="token operator">+</span>
+<span class="token operator">|</span> Variable_name                   <span class="token operator">|</span> Value                           <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span><span class="token operator">+</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span><span class="token operator">+</span>
+<span class="token operator">|</span> log_bin                         <span class="token operator">|</span> ON                              <span class="token operator">|</span>
+<span class="token operator">|</span> log_bin_basename                <span class="token operator">|</span> <span class="token operator">/</span>data<span class="token operator">/</span>mysql<span class="token operator">/</span>bin<span class="token operator">/</span>mysql<span class="token operator">-</span>bin       <span class="token operator">|</span>
+<span class="token operator">|</span> log_bin_index                   <span class="token operator">|</span> <span class="token operator">/</span>data<span class="token operator">/</span>mysql<span class="token operator">/</span>bin<span class="token operator">/</span>mysql<span class="token operator">-</span>bin<span class="token punctuation">.</span>index <span class="token operator">|</span>
+<span class="token operator">|</span> log_bin_trust_function_creators <span class="token operator">|</span> OFF                             <span class="token operator">|</span>
+<span class="token operator">|</span> log_bin_use_v1_row_events       <span class="token operator">|</span> OFF                             <span class="token operator">|</span>
+<span class="token operator">|</span> sql_log_bin                     <span class="token operator">|</span> ON                              <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span><span class="token operator">+</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span><span class="token operator">+</span>
 </code></pre>
 <h2 id="模拟删库"><a href="#模拟删库" class="headerlink" title="模拟删库"></a>模拟删库</h2><p>通过 <code>reset master;</code>将数据库历史的binlog文件还原，然后新增库 test 新增表 test;  </p>
 <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a33201fa186e498f9fc7b1fc1a0f573e~tplv-k3u1fbpfcp-watermark.image">  </p>
@@ -521,16 +556,16 @@ sync‐binlog=1
 <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/abc10d560c1246aa9825b1bba227894f~tplv-k3u1fbpfcp-watermark.image"></p>
 <p>然后删除库，也会进行记录。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aa0237523e354ea69b654d955788a7c2~tplv-k3u1fbpfcp-watermark.image"><br><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/12679e6963844951b60e76a3c9e4ac61~tplv-k3u1fbpfcp-watermark.image"></p>
 <h2 id="数据恢复"><a href="#数据恢复" class="headerlink" title="数据恢复"></a>数据恢复</h2><p>通过mysql提供的 mysqlbinlog 命令查看日志文件，找到需要恢复的位子。</p>
-<pre><code>/usr/local/mysql/bin/mysqlbinlog --no-defaults /data/mysql/bin/mysql-bin.000001
+<pre class=" language-JAVA"><code class="language-JAVA">/usr/local/mysql/bin/mysqlbinlog --no-defaults /data/mysql/bin/mysql-bin.000001
 </code></pre>
 <p>可以看到一些库以及表的信息。</p>
 <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/17d10bf3549d45b2829a5ada491d6163~tplv-k3u1fbpfcp-watermark.image"></p>
 <p>选择需要恢复的内容，并记录行号。<br><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c30460c80ff948679081e6d40c79403b~tplv-k3u1fbpfcp-watermark.image"></p>
 <p>通过以下命令，进行恢复（恢复之前需要新建一个和原来一样的库）</p>
-<pre><code>## 行号
-/usr/local/mysql/bin/mysqlbinlog --no-defaults --start-position=&quot;1491&quot; --stop-position=&quot;2424&quot; /data/mysql/bin/mysql-bin.000001 |./mysql -u root -p test 
+<pre class=" language-JAVA"><code class="language-JAVA">## 行号
+/usr/local/mysql/bin/mysqlbinlog --no-defaults --start-position="1491" --stop-position="2424" /data/mysql/bin/mysql-bin.000001 |./mysql -u root -p test 
 ## 通过时间
-/usr/local/mysql/bin/mysqlbinlog --no-defaults /data/mysql/bin/mysql-bin.000001 --stop-date= &quot;2020-11-24 00:00:00&quot;  --start-date= &quot;2020-11-24 11:55:00&quot;| ./mysql -u root -p test
+/usr/local/mysql/bin/mysqlbinlog --no-defaults /data/mysql/bin/mysql-bin.000001 --stop-date= "2020-11-24 00:00:00"  --start-date= "2020-11-24 11:55:00"| ./mysql -u root -p test
 ## 全部恢复
 /usr/local/mysql/bin/mysqlbinlog --no-defaults /data/mysql/bin/mysql-bin.000001 |./mysql -u root -p test
 
@@ -888,6 +923,9 @@ JVM 使用的是KLT模型，java线程和操作系统os线程保持着一对一�
             |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">42.4k</span>&nbsp;字
             
             
             
