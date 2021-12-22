@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="分类: 算法, 疯狂小周">
+    <meta name="keywords" content="分类: 并发, 疯狂小周">
     <meta name="description" content="拒绝只会 CRUD ！">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>分类: 算法 | 疯狂小周</title>
+    <title>分类: 并发 | 疯狂小周</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/libs/awesome/css/all.css">
@@ -383,7 +383,7 @@
                 
                 <a href="/categories/%E7%AE%97%E6%B3%95/" title="算法: 1">
                     <span class="chip center-align waves-effect waves-light
-                             chip-active "
+                             chip-default "
                             style="background-color: #F5EEF8;">算法
                         <span class="tag-length">1</span>
                     </span>
@@ -464,7 +464,7 @@
                 
                 <a href="/categories/%E5%B9%B6%E5%8F%91/" title="并发: 1">
                     <span class="chip center-align waves-effect waves-light
-                             chip-default "
+                             chip-active "
                             style="background-color: #F8C471;">并发
                         <span class="tag-length">1</span>
                     </span>
@@ -484,39 +484,34 @@
             
             <div class="article tag-post col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
-                    <a href="/2020/10/22/QuickSort/">
+                    <a href="/2021/12/22/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E4%B9%8B-%E5%86%8D%E7%9C%8B-synchronized/">
                         <div class="card-image tag-image">
                             
                             
-                            <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="QuickSort">
+                            <img src="https://cdn.jsdelivr.net/gh/zhouxh-z/zhouxh-z.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="并发编程之再看 synchronized">
                             
-                            <span class="card-title">QuickSort</span>
+                            <span class="card-title">并发编程之再看 synchronized</span>
                         </div>
                     </a>
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                坚持学习，坚持写博客，努力向大佬前进！ QAQ ………之前面试被算法虐惨了，所以决定开一个算法的分类，记录一些日常算法
-快速排序我们先通过图片看下快排到底是怎样实现的
+                                使用场景在多个线程对同一个共享资源进行读写操作时，由于代码的执行序列的不确定会导致结果不可预测；为了避免这情况的发生，java 提供了多种解决方案来达到目的；
 
-
-然后就是上代码：
-package com.util;
- 
-/**
- 
+阻塞式：synchronized、reentrantLock
+非阻塞：基于CA
                             
                         </div>
                         <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-22
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-22
                             </span>
                             <span class="publish-author">
                                 
                                 <i class="fas fa-bookmark fa-fw icon-category"></i>
                                 
-                                <a href="/categories/%E7%AE%97%E6%B3%95/" class="post-category">
-                                    算法
+                                <a href="/categories/%E5%B9%B6%E5%8F%91/" class="post-category">
+                                    并发
                                 </a>
                                 
                                 
@@ -524,6 +519,14 @@ package com.util;
                         </div>
                     </div>
 
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/synchronized/">
+                            <span class="chip bg-color">synchronized</span>
+                        </a>
+                        
+                    </div>
                     
                 </div>
             </div>
